@@ -1,0 +1,22 @@
+{
+    "tasks": [
+      {
+        "title": "Finish React Project",
+        "date": "2025-04-30",
+        "description": "Complete the TaskNest app and push it to GitHub."
+      },
+      {
+        "title": "Prepare for Meeting",
+        "date": "2025-05-01",
+        "description": "Review the meeting notes and prepare a short presentation."
+      }
+    ],
+    "completedTasks": [
+      {
+        "title": "Buy Groceries",
+        "date": "2025-04-28",
+        "description": "Milk, eggs, and vegetables from the supermarket."
+      }
+    ]
+  }
+  
