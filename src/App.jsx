@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
+
 function App() {
   const [tasks, setTasks] = useState([]);
   const [completedTasks, setCompletedTasks] = useState([]);
@@ -7,6 +8,7 @@ function App() {
   const [taskTitle, setTaskTitle] = useState('');
   const [taskDate, setTaskDate] = useState('');
   const [taskDescription, setTaskDescription] = useState('');
+  const [isRegister, setIsRegister] = useState(false);
 
   // Load tasks and completed tasks from localStorage when page loads
   useEffect(() => {
@@ -21,6 +23,7 @@ function App() {
     localStorage.setItem('tasks', JSON.stringify(tasks));
     localStorage.setItem('completedTasks', JSON.stringify(completedTasks));
   }, [tasks, completedTasks]);
+    
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
