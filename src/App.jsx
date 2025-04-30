@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-
 function App() {
   const [tasks, setTasks] = useState([]);
   const [completedTasks, setCompletedTasks] = useState([]);
@@ -8,9 +7,8 @@ function App() {
   const [taskTitle, setTaskTitle] = useState('');
   const [taskDate, setTaskDate] = useState('');
   const [taskDescription, setTaskDescription] = useState('');
-  const [isRegister, setIsRegister] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
-  // Load tasks and completed tasks from localStorage when page loads
   useEffect(() => {
     const storedTasks = JSON.parse(localStorage.getItem('tasks'));
     const storedCompletedTasks = JSON.parse(localStorage.getItem('completedTasks'));
@@ -18,12 +16,10 @@ function App() {
     if (storedCompletedTasks) setCompletedTasks(storedCompletedTasks);
   }, []);
 
-  // Save tasks to localStorage whenever tasks change
   useEffect(() => {
     localStorage.setItem('tasks', JSON.stringify(tasks));
     localStorage.setItem('completedTasks', JSON.stringify(completedTasks));
   }, [tasks, completedTasks]);
-    
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -53,25 +49,44 @@ function App() {
     setTasks(tasks.filter((_, i) => i !== index));
   };
 
+  const filteredTasks = tasks.filter(task =>
+    task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    task.description.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredCompletedTasks = completedTasks.filter(task =>
+    task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    task.description.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col justify-between p-8">
       <div>
-        <header className="flex justify-between items-center mb-8">
+        <header className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-8">
           <h1 className="text-3xl font-bold">TaskNest</h1>
-          <button
-            onClick={openModal}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
-          >
-            Add Task
-          </button>
+          <div className="flex gap-4 items-center">
+            <input
+              type="text"
+              placeholder="Search tasks..."
+              className="px-4 py-2 rounded bg-gray-700 text-white w-full md:w-64"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <button
+              onClick={openModal}
+              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+            >
+              Add Task
+            </button>
+          </div>
         </header>
 
         {/* Active Tasks */}
         <div className="mb-10">
           <h2 className="text-2xl hover:underline font-semibold mb-4">Active Tasks</h2>
-          {tasks.length > 0 ? (
+          {filteredTasks.length > 0 ? (
             <div className="grid gap-4">
-              {tasks.map((task, index) => (
+              {filteredTasks.map((task, index) => (
                 <div
                   key={index}
                   className="bg-gray-800 p-4 rounded shadow hover:shadow-lg transition flex justify-between items-start"
@@ -99,16 +114,16 @@ function App() {
               ))}
             </div>
           ) : (
-            <p className="text-gray-400">No active tasks. Do you want to add one?</p>
+            <p className="text-gray-400">No active tasks match your search.</p>
           )}
         </div>
 
         {/* Completed Tasks */}
         <div>
           <h2 className="text-2xl hover:underline font-semibold mb-4">Completed Tasks</h2>
-          {completedTasks.length > 0 ? (
+          {filteredCompletedTasks.length > 0 ? (
             <div className="grid gap-4">
-              {completedTasks.map((task, index) => (
+              {filteredCompletedTasks.map((task, index) => (
                 <div
                   key={index}
                   className="bg-gray-700 p-4 rounded shadow hover:shadow-lg transition line-through text-gray-400"
@@ -120,7 +135,7 @@ function App() {
               ))}
             </div>
           ) : (
-            <p className="text-gray-500">No tasks completed yet.</p>
+            <p className="text-gray-500">No completed tasks match your search.</p>
           )}
         </div>
       </div>
@@ -130,7 +145,6 @@ function App() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-gray-800 p-8 rounded shadow-lg w-80">
             <h2 className="text-2xl mb-4 font-bold">New Task</h2>
-
             <input
               type="text"
               placeholder="Title"
@@ -150,7 +164,6 @@ function App() {
               value={taskDescription}
               onChange={(e) => setTaskDescription(e.target.value)}
             />
-
             <div className="flex justify-end gap-4">
               <button
                 onClick={closeModal}
